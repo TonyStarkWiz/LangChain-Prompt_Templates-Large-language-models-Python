@@ -1,37 +1,28 @@
 import unittest
-from unittest.mock import patch
+import time
 from Prompt_Templates import chat_prompt.format_prompt  # Import your recipe generation function
 
-class TestRecipeAccuracy(unittest.TestCase):
+class TestRecipeSpeed(unittest.TestCase):
 
-    @patch('builtins.open', return_value=open('api_jupyter.txt', 'r'))
-    @patch('langchain.llms.OpenAI')
-    @patch('langchain.chat_models.ChatOpenAI')
-    @patch('openai.ChatCompletion.create')
-    def test_recipe_accuracy(self, mock_openai_chat, mock_chat_openai, mock_openai, mock_open):
-        # Set up your mocked responses from OpenAI
-        mock_openai.return_value.api_key = 'your_mocked_api_key'
-        mock_openai_chat.return_value.choices[0].message['content'] = 'Your mocked OpenAI response'
-        mock_chat_openai.return_value.content = 'Your mocked ChatOpenAI response'
+    def test_recipe_generation_speed(self):
+        # Define input parameters for the recipe generation function
+        cooking_time = '60 min'
+        recipe_request = 'Quick Snake'
+        dietary_preference = 'Vegan'
 
-        # Call your function that generates the recipe
-        generated_recipe = chat_prompt.format_prompt(cooking_time='60 min',
-                          recipe_request='Quick Snake',
-                          dietary_preference='Vegan').to_messages()
+        # Measure the time taken to generate the recipe
+        start_time = time.time()
+        generated_recipe = generate_recipe(cooking_time, recipe_request, dietary_preference)
+        end_time = time.time()
 
-        # Define the expected recipe content based on the mocked responses
-        expected_recipe = 
-        Ingredients:
+        # Calculate the time taken in seconds
+        time_taken = end_time - start_time
 
-        Instructions:
+        # Define the maximum allowed time for recipe generation (adjust as needed)
+        max_allowed_time = 1.0  # 1 second
 
-
-        # Strip whitespace and newlines for accurate comparison
-        generated_recipe_stripped = generated_recipe.strip()
-        expected_recipe_stripped = expected_recipe.strip()
-
-        # Assert if the generated recipe matches the expected recipe
-        self.assertEqual(generated_recipe_stripped, expected_recipe_stripped)
+        # Assert that the time taken is less than the maximum allowed time
+        self.assertLess(time_taken, max_allowed_time, f"Recipe generation took {time_taken:.2f} seconds, which exceeds the allowed time of {max_allowed_time} seconds.")
 
 if __name__ == '__main__':
     unittest.main()
